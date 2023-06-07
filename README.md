@@ -1,3 +1,3 @@
-# Synthetic RGB-D data for plant segmentation
+# DATASET_NAME
 
-Synthetic RGB-D data for plant segmentation: Semantic and instance segmentation
+DATASET_NAME
