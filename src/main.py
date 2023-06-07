@@ -83,23 +83,23 @@ custom_data = {
     #####################
     "name": PROJECT_NAME,  # * Should be filled in the beginning of file
     "fullname": PROJECT_NAME_FULL,  # * Should be filled in the beginning of file
-    "cv_tasks": ["semantic segmentation", "instance segmentation"],  # ! FILL IT!
-    "annotation_types": ["semantic segmentation", "instance segmentation"],  # ! FILL IT!
-    "industries": ["general domain"],  # ! FILL IT!
-    "release_year": 2018,  # ! FILL IT!
-    "homepage_url": "https://www.kaggle.com/datasets/kumaresanmanickavelu/lyft-udacity-challenge",  # ! FILL IT!
-    "license": "CC0: Public Domain",  # ! FILL IT!
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",  # ! FILL IT!
-    "preview_image_id": 224318,  # ! This should be filled AFTER uploading images to instance, just ID of any image
-    "github_url": "https://github.com/dataset-ninja/synthetic-plants",  # ! input url to GitHub repo in dataset-ninja
-    "github": "dataset-ninja/synthetic-plants",  # ! input GitHub repo in dataset-ninja (short way)
+    "cv_tasks": ["semantic segmentation", "instance segmentation"],  # FILL IT!
+    "annotation_types": ["semantic segmentation", "instance segmentation"],  # FILL IT!
+    "industries": ["general domain"],  # FILL IT!
+    "release_year": 2018,  # FILL IT!
+    "homepage_url": "https://www.kaggle.com/datasets/kumaresanmanickavelu/lyft-udacity-challenge",  # FILL IT!
+    "license": "CC0: Public Domain",  # FILL IT!
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",  # FILL IT!
+    "preview_image_id": 224318,  # This should be filled AFTER uploading images to instance, just ID of any image
+    "github_url": "https://github.com/dataset-ninja/synthetic-plants",  # input url to GitHub repo in dataset-ninja
+    "github": "dataset-ninja/synthetic-plants",  # input GitHub repo in dataset-ninja (short way)
     "download_sly_url": download_sly_url,
     #####################
     # ? optional fields #
     #####################
     # "download_original_url": Union[None, str],
     # "paper": Union[None, str],
-    # "citation_url": None,  # ! FILL IT!
+    # "citation_url": None,  # FILL IT!
     # "organization_name": Union[None, str, list],
     # "organization_url": Union[None, str, list],
     # "tags": [],
