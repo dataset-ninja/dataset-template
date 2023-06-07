@@ -93,15 +93,15 @@ custom_data = {
     "preview_image_id": 224318,  # ! This should be filled AFTER uploading images to instance, just ID of any image
     "github_url": "https://github.com/dataset-ninja/synthetic-plants",  # ! input url to GitHub repo in dataset-ninja
     "github": "dataset-ninja/synthetic-plants",  # ! input GitHub repo in dataset-ninja (short way)
-    "citation_url": None,  # ! FILL IT!
     "download_sly_url": download_sly_url,
     #####################
     # ? optional fields #
     #####################
-    # "download_original_url": None,
-    # "paper": None,
-    # "organization_name": None,
-    # "organization_url": None,
+    # "download_original_url": Union[None, str],
+    # "paper": Union[None, str],
+    # "citation_url": None,  # ! FILL IT!
+    # "organization_name": Union[None, str, list],
+    # "organization_url": Union[None, str, list],
     # "tags": [],
 }
 
