@@ -17,8 +17,10 @@ from src.convert import convert_and_upload_supervisely_project
 # ? 6. Push to GitHub.
 
 # * Names of the project that will appear on instance and on Ninja webpage.
-PROJECT_NAME = "basic name (short)"  # ! Fill the name of the project
-PROJECT_NAME_FULL = "full name (long)"  # ! Fill the full name of the project
+PROJECT_NAME = "basic name (short)"
+PROJECT_NAME_FULL = "full name (long)" 
+DOWNLOAD_ORIGINAL_URL = "https://some.com/dataset/dowload_url"  # Union[None, str]
+
 
 # * Create instance of supervisely API object.
 load_dotenv(os.path.expanduser("~/ninja.env"))
@@ -71,7 +73,15 @@ if from_instance:
 
 # * Step 2: Get download link
 download_sly_url = dtools.prepare_download_link(project_info)
-dtools.update_sly_url_dict({project_id: download_sly_url})
+dtools.update_sly_url_dict(
+    {
+        PROJECT_NAME: {
+            "id": project_id,
+            "download_sly_url": download_sly_url,
+            "download_original_url": DOWNLOAD_ORIGINAL_URL,
+        }
+    }
+)
 sly.logger.info(f"Prepared download link: {download_sly_url}")
 
 
@@ -97,7 +107,7 @@ custom_data = {
     #####################
     # ? optional fields #
     #####################
-    # "download_original_url": Union[None, str],
+    # "download_original_url": DOWNLOAD_ORIGINAL_URL # Union[None, str],
     # "paper": Union[None, str],
     # "citation_url": None,  # FILL IT!
     # "organization_name": Union[None, str, list],
