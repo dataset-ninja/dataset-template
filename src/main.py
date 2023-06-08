@@ -20,7 +20,25 @@ from src.convert import convert_and_upload_supervisely_project
 PROJECT_NAME = "basic name (short)" # str
 PROJECT_NAME_FULL = "full name (long)" # str
 DOWNLOAD_ORIGINAL_URL = "https://some.com/dataset/dowload_url"  # Union[None, str]
-
+CLASS2COLOR = None  # or set manually with {"class":"color"} pattern.
+# Choose color from hex, rgb, or one of following presets:
+clr_presets = {
+    "red": "#D0021B",
+    "orange": "#F5A623",
+    "yellow": "#F8E71C",
+    "brown": "#8B572A",
+    "lime": "#7ED321",
+    "green": "#417505",
+    "magenta": "#BD10E0",
+    "purple": "#9013FE",
+    "blue": "#4A90E2",
+    "aqua": "#50E3C2",
+    "palelime": "#B8E986",
+    "black": "#000000",
+    "darkgray": "#4A4A4A",
+    "gray": "#9B9B9B",
+    "white": "#FFFFFF",
+}
 
 # Create instance of supervisely API object.
 load_dotenv(os.path.expanduser("~/ninja.env"))
@@ -60,6 +78,16 @@ if from_instance:
     sly.logger.info("The app in the instance mode. Will download data from Supervisely.")
 
     project_meta = sly.ProjectMeta.from_json(api.project.get_meta(project_id))
+    if CLASS2COLOR is not None:
+        meta_json = project_meta.to_json()
+        for class_info in meta_json["classes"]:
+            class_title = class_info["title"]
+            if class_title in CLASS2COLOR:
+                new_color = CLASS2COLOR[class_title]
+                class_info["color"] = clr_presets.get(new_color, new_color)
+        api.project.update_meta(project_id, meta_json)
+        project_meta = sly.ProjectMeta.from_json(meta_json)
+        
     datasets = api.dataset.get_list(project_id)
 
     sly.logger.info(
