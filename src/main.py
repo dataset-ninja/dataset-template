@@ -146,6 +146,11 @@ def build_stats():
     for stat in stats:
         if not sly.fs.file_exists(f"./stats/{stat.basename_stem}.json"):
             stat.force = True
+        if (
+            isinstance(stat, dtools.ClassCooccurrence)
+            and len(project_meta.obj_classes.items()) == 1
+        ):
+            stat.force = False
     stats = [stat for stat in stats if stat.force]
 
     if not sly.fs.file_exists(f"./stats/{heatmaps.basename_stem}.png"):
