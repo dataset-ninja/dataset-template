@@ -175,7 +175,7 @@ def build_stats():
 
     if len(vstats) > 0:
         if heatmaps.force:
-            heatmaps.to_image(f"./stats/{heatmaps.basename_stem}.png", draw_style="outside_black")
+            heatmaps.to_image(f"./stats/{heatmaps.basename_stem}.png")
         if classes_previews.force:
             classes_previews.animate(f"./visualizations/{classes_previews.basename_stem}.webm")
         if previews.force:
