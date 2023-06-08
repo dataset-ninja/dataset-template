@@ -8,18 +8,17 @@ from dotenv import load_dotenv
 
 from src.convert import convert_and_upload_supervisely_project
 
-# !    Checklist before running the app:
-# * 1. Set project name and project name full.
-# * 2. Prepare convert_and_upload_supervisely_project() function in convert.py
-#      It should receive API object, workspace_id and project_name and return project_info of the created project.
-# * 3. Fill out neccessary fields in custom data dict.
-# * 4. Launch the script.
-# ? 5. Fill out CITATION.md, EXPERT.md, LICENSE.md, README.md
-# ? 6. Push to GitHub.
+# !  Checklist before running the app:
+# 1. Set project name and project name full.
+# 2. Prepare convert_and_upload_supervisely_project() in convert.py with proposed annotations
+# 3. Fill out neccessary fields in custom data dict.
+# 4. Launch the script.
+# 5. Fill out CITATION.md, EXPERT.md, LICENSE.md, README.md
+# 6. Push to GitHub.
 
 # Names of the project that will appear on instance and on Ninja webpage.
-PROJECT_NAME = "basic name (short)"
-PROJECT_NAME_FULL = "full name (long)" 
+PROJECT_NAME = "basic name (short)" # str
+PROJECT_NAME_FULL = "full name (long)" # str
 DOWNLOAD_ORIGINAL_URL = "https://some.com/dataset/dowload_url"  # Union[None, str]
 
 
@@ -67,8 +66,7 @@ if from_instance:
         f"Prepared project meta and read {len(datasets)} datasets for project with id={project_id}."
     )
 
-# ? Option 2: From local directory
-# ! Not implemented yet
+# ? Option 2: From local directory (! Not implemented yet)
 # project_path = os.environ["LOCAL_DATA_DIR"]
 # sly.download(api, project_id, project_path, save_image_info=True, save_images=False)
 # project_meta = sly.Project(project_path, sly.OpenMode.READ).meta
@@ -110,11 +108,11 @@ custom_data = {
     #####################
     # ? optional fields #
     #####################
-    # "download_original_url": DOWNLOAD_ORIGINAL_URL # Union[None, str],
-    # "paper": Union[None, str],
-    # "citation_url": None,  # FILL IT!
-    # "organization_name": Union[None, str, list],
-    # "organization_url": Union[None, str, list],
+    # "download_original_url": DOWNLOAD_ORIGINAL_URL # Union[None, str]  # * Should be filled in the beginning of file
+    # "paper": # Union[None, str],
+    # "citation_url": None, 
+    # "organization_name": # Union[None, str, list],
+    # "organization_url": # Union[None, str, list],
     # "tags": [],
 }
 
