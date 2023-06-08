@@ -96,8 +96,8 @@ custom_data = {
     #####################
     "name": PROJECT_NAME,  # * Should be filled in the beginning of file
     "fullname": PROJECT_NAME_FULL,  # * Should be filled in the beginning of file
-    "cv_tasks": ["semantic segmentation", "instance segmentation"], 
-    "annotation_types": ["semantic segmentation", "instance segmentation"], 
+    "cv_tasks": ["semantic segmentation", "object detection", "instance segmentation"], 
+    "annotation_types": ["instance segmentation"], 
     "industries": ["general domain"],
     "release_year": 2018, 
     "homepage_url": "https://www.kaggle.com/datasets/kumaresanmanickavelu/lyft-udacity-challenge", 
