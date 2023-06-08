@@ -47,11 +47,13 @@ CLASS2COLOR: Optional[Dict[str, List[str]]] = None
 LICENSE_URLS = {
     "CCO": "https://creativecommons.org/publicdomain/zero/1.0/",
     "CC BY-SA 4.0": "https://creativecommons.org/licenses/by-sa/4.0/",
+    "MIT License": "https://spdx.org/licenses/MIT.html",
 }
 
 LICENSE_TEXTS = {
     "CCO": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
     "CC BY-SA 4.0": "Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)",
+    "MIT License": "MIT License",
 }
 
 CITATION_TEMPLATE = (
