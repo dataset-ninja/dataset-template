@@ -302,6 +302,7 @@ def main():
     build_readme()
 
     sly.logger.info("Script finished successfully.")
+    sly.logger.warning("If needed EXPERT.md should be created and filled manually.")
 
 
 if __name__ == "__main__":
