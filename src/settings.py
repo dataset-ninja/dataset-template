@@ -9,8 +9,8 @@ PROJECT_NAME_FULL: str = None
 ##################################
 # * After uploading to instance ##
 ##################################
-LICENSE: str = None
-# Available licenses: ["CC0", "CC-BY"]
+LICENSE: str = "None"
+# Available licenses: ["CC0", "CC BY-SA 4.0"]
 
 INDUSTRIES: List[str] = None
 # Available industries: ["general domain"]
@@ -46,20 +46,22 @@ CLASS2COLOR: Optional[Dict[str, List[str]]] = None
 
 LICENSE_URLS = {
     "CCO": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "CC BY-SA 4.0": "https://creativecommons.org/licenses/by-sa/4.0/",
 }
 
 LICENSE_TEXTS = {
     "CCO": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+    "CC BY-SA 4.0": "Creative Commons Attribution-ShareAlike 4.0 International (CC BY-SA 4.0)",
 }
 
 CITATION_TEMPLATE = (
     "If you make use of the {project_name_full} data, "
     "please cite the following reference (to be prepared after the challenge workshop) "
-    "in any publications: "
-    "```@misc{{project_name},\n"
-    'author = "TO BE FILLED MANUALLY!",\n'
-    'title = "{project_name_full}",\n'
-    'howpublished = "{homepage_url}"}```\n\n'
+    "in any publications:\n\n"
+    "```\n@misc{{{project_name},\n"
+    '\tauthor = "TO BE FILLED MANUALLY!",\n'
+    '\ttitle = "{project_name_full}",\n'
+    '\thowpublished = "{homepage_url}"\n}}\n```\n\n'
     "[🔗 Source]({homepage_url})"
 )
 

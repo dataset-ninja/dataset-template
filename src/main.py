@@ -282,7 +282,7 @@ def build_readme():
     readme_content = s.README_TEMPLATE.format(
         project_name_full=s.PROJECT_NAME_FULL,
         project_name=s.PROJECT_NAME,
-        cv_tasks=s.CV_TASKS,
+        cv_tasks=", ".join(s.CV_TASKS),
     )
 
     with open("README.md", "w") as readme_file:
