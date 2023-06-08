@@ -1,0 +1,93 @@
+from typing import Dict, List, Optional
+
+##################################
+# * Before uploading to instance #
+##################################
+PROJECT_NAME: str = None
+PROJECT_NAME_FULL: str = None
+
+##################################
+# * After uploading to instance ##
+##################################
+LICENSE: str = None
+# Available licenses: ["CC0", "CC-BY"]
+
+INDUSTRIES: List[str] = None
+# Available industries: ["general domain"]
+
+CV_TASKS: List[str] = None
+# Available cv tasks: ["semantic segmentation", "instance segmentation"]
+
+ANNOTATION_TYPES: List[str] = None
+# Available annotation types: ["semantic segmentation", "instance segmentation"]
+
+RELEASE_YEAR: int = None
+HOMEPAGE_URL: str = None
+# e.g. "https://some.com/dataset/homepage"
+
+PREVIEW_IMAGE_ID: int = None
+# This should be filled AFTER uploading images to instance, just ID of any image.
+
+GITHUB_URL: str = None
+# URL to GitHub repo on dataset ninja (e.g. "https://github.com/dataset-ninja/some-dataset")
+
+##################################
+### * Optional after uploading ###
+##################################
+DOWNLOAD_ORIGINAL_URL: Optional[str] = None
+# Optional link for downloading original dataset (e.g. "https://some.com/dataset/download")
+
+CLASS2COLOR: Optional[Dict[str, List[str]]] = None
+# If specific colors for classes are needed, fill this dict (e.g. {"class1": [255, 0, 0], "class2": [0, 255, 0]})
+
+##################################
+#### ? Templates. Do not edit ####
+##################################
+
+LICENSE_URLS = {
+    "CCO": "https://creativecommons.org/publicdomain/zero/1.0/",
+}
+
+LICENSE_TEXTS = {
+    "CCO": "CC0 1.0 Universal (CC0 1.0) Public Domain Dedication",
+}
+
+CITATION_TEMPLATE = (
+    "If you make use of the {project_name_full} data, "
+    "please cite the following reference (to be prepared after the challenge workshop) "
+    "in any publications: "
+    "```@misc{{project_name},\n"
+    'author = "TO BE FILLED MANUALLY!",\n'
+    'title = "{project_name_full}",\n'
+    'howpublished = "{homepage_url}"}```\n\n'
+    "[🔗 Source]({homepage_url})"
+)
+
+LICENSE_TEMPLATE = "{project_name_full} data uses [{license_text}]({license_url})."
+
+README_TEMPLATE = "# {project_name_full}\n\n{project_name} is a dataset for {cv_tasks} tasks."
+
+##################################
+###### ? Checks. Do not edit #####
+##################################
+
+
+def check_before_upload():
+    fields_before_upload = [PROJECT_NAME, PROJECT_NAME_FULL]
+    if any([field is None for field in fields_before_upload]):
+        raise ValueError("Please fill all fields in settings.py before uploading to instance.")
+
+
+def check_after_upload():
+    fields_after_upload = [
+        LICENSE,
+        INDUSTRIES,
+        CV_TASKS,
+        ANNOTATION_TYPES,
+        RELEASE_YEAR,
+        HOMEPAGE_URL,
+        PREVIEW_IMAGE_ID,
+        GITHUB_URL,
+    ]
+    if any([field is None for field in fields_after_upload]):
+        raise ValueError("Please fill all fields in settings.py after uploading to instance.")

@@ -1,64 +1,13 @@
 import json
 import os
 import sys
-from typing import List, Optional
 
 import dataset_tools as dtools
 import supervisely as sly
 from dotenv import load_dotenv
 
+import src.settings as s
 from src.convert import convert_and_upload_supervisely_project
-
-# !  Checklist before running the app:
-# 1. Set project name and project name full.
-# 2. Prepare convert_and_upload_supervisely_project() in convert.py with proposed annotations
-# 3. Fill out neccessary fields in custom data dict.
-# 4. Launch the script.
-# 5. Fill out CITATION.md, EXPERT.md, LICENSE.md, README.md
-# 6. Push to GitHub.
-
-# region settings
-
-##################################
-# * Before uploading to instance #
-##################################
-PROJECT_NAME: str = "basic name (short)"
-PROJECT_NAME_FULL: str = "full name (long)"
-
-
-##################################
-# * After uploading to instance  #
-##################################
-LICENSE: str = "input license here"
-# Available licenses: ["CC0", "CC-BY"]
-
-INDUSTRIES: List[str] = ["input industries here"]
-# Available industries: ["general domain"]
-
-CV_TASKS: List[str] = ["input cv tasks here"]
-# Available cv tasks: ["semantic segmentation", "instance segmentation"]
-
-ANNOTATION_TYPES: List[str] = ["input annotation types here"]
-# Available annotation types: ["semantic segmentation", "instance segmentation"]
-
-RELEASE_YEAR: int = 2000
-HOMEPAGE_URL: str = "input http url here"
-# e.g. "https://some.com/dataset/homepage"
-
-DOWNLOAD_ORIGINAL_URL: Optional[str] = "input http url here"
-# e.g. "https://some.com/dataset/download"
-
-PREVIEW_IMAGE_ID: int = 0
-# This should be filled AFTER uploading images to instance, just ID of any image.
-
-GITHUB_URL: str = "input http url here"
-# URL to GitHub repo on dataset ninja (e.g. "https://github.com/dataset-ninja/some-dataset")
-
-# endregion
-
-LICENSE_URLS = {
-    "CCO": "https://creativecommons.org/publicdomain/zero/1.0/",
-}
 
 # Create instance of supervisely API object.
 load_dotenv(os.path.expanduser("~/ninja.env"))
@@ -71,25 +20,28 @@ sly.logger.info(
     f"Connected to Supervisely. Server address: {server_address}, team_id: {team_id}, workspace_id: {workspace_id}."
 )
 
-# Create directories for result stats and visualizations.
+
+# Create directories for result stats and visualizations and check if all fields in settings.py are filled.
 os.makedirs("./stats/", exist_ok=True)
 os.makedirs("./visualizations/", exist_ok=True)
+s.check_before_upload()
 
 # Trying to retreive project info from instance by name.
-project_info = api.project.get_info_by_name(workspace_id, PROJECT_NAME)
+project_info = api.project.get_info_by_name(workspace_id, s.PROJECT_NAME)
 if not project_info:
     # If project doesn't found on instance, create it and use new project info.
-    project_info = convert_and_upload_supervisely_project(api, workspace_id, PROJECT_NAME)
-    sly.logger.info(f"Project {PROJECT_NAME} not found on instance. Created new project.")
+    project_info = convert_and_upload_supervisely_project(api, workspace_id, s.PROJECT_NAME)
+    sly.logger.info(f"Project {s.PROJECT_NAME} not found on instance. Created new project.")
     sly.logger.info("Now you can explore created project and choose 'preview_image_id'.")
     sys.exit(0)
 else:
-    sly.logger.info(f"Found project {PROJECT_NAME} on instance, will use it.")
+    sly.logger.info(f"Found project {s.PROJECT_NAME} on instance, will use it.")
 
 project_id = project_info.id
 
-# How the app will work: from instance or from local directory.
+# How the app will work: from instance or from local directory and check if all fields in settings.py are filled.
 from_instance = True  # ToDo: Automatically detect if app is running from instance or locally.
+s.check_after_upload()
 
 # * Step 1: Read project and project meta
 # ? Option 1: From supervisely instance
@@ -98,6 +50,21 @@ if from_instance:
     sly.logger.info("The app in the instance mode. Will download data from Supervisely.")
 
     project_meta = sly.ProjectMeta.from_json(api.project.get_meta(project_id))
+
+    if s.CLASS2COLOR:
+        sly.logger.info("Classes colors are specified in settings.py. Will update project meta.")
+
+        items = []
+        for obj_class in project_meta.obj_classes.items():
+            if obj_class.name in s.CLASS2COLOR:
+                items.append(obj_class.clone(color=s.CLASS2COLOR[obj_class.name]))
+            else:
+                items.append(obj_class)
+        project_meta = sly.ProjectMeta(obj_classes=items)
+        api.project.update_meta(project_id, project_meta)
+
+        sly.logger.info("Successfully changed classes colors and updated project meta.")
+
     datasets = api.dataset.get_list(project_id)
 
     sly.logger.info(
@@ -114,10 +81,10 @@ if from_instance:
 download_sly_url = dtools.prepare_download_link(project_info)
 dtools.update_sly_url_dict(
     {
-        PROJECT_NAME: {
+        s.PROJECT_NAME: {
             "id": project_id,
             "download_sly_url": download_sly_url,
-            "download_original_url": DOWNLOAD_ORIGINAL_URL,
+            "download_original_url": s.DOWNLOAD_ORIGINAL_URL,
         }
     }
 )
@@ -130,23 +97,23 @@ custom_data = {
     #####################
     # ! required fields #
     #####################
-    "name": PROJECT_NAME,
-    "fullname": PROJECT_NAME_FULL,
-    "cv_tasks": CV_TASKS,
-    "annotation_types": ANNOTATION_TYPES,
-    "industries": INDUSTRIES,
-    "release_year": RELEASE_YEAR,
-    "homepage_url": HOMEPAGE_URL,
-    "license": LICENSE,
-    "license_url": LICENSE_URLS[LICENSE],
-    "preview_image_id": PREVIEW_IMAGE_ID,
-    "github_url": GITHUB_URL,
-    "github": GITHUB_URL[GITHUB_URL.index("dataset-ninja") :],
+    "name": s.PROJECT_NAME,
+    "fullname": s.PROJECT_NAME_FULL,
+    "cv_tasks": s.CV_TASKS,
+    "annotation_types": s.ANNOTATION_TYPES,
+    "industries": s.INDUSTRIES,
+    "release_year": s.RELEASE_YEAR,
+    "homepage_url": s.HOMEPAGE_URL,
+    "license": s.LICENSE,
+    "license_url": s.LICENSE_URLS[s.LICENSE],
+    "preview_image_id": s.PREVIEW_IMAGE_ID,
+    "github_url": s.GITHUB_URL,
+    "github": s.GITHUB_URL[s.GITHUB_URL.index("dataset-ninja") :],
     "download_sly_url": download_sly_url,
     #####################
     # ? optional fields #
     #####################
-    "download_original_url": DOWNLOAD_ORIGINAL_URL,
+    "download_original_url": s.DOWNLOAD_ORIGINAL_URL,
     # "paper": # Union[None, str],
     # "citation_url": None,
     # "organization_name": # Union[None, str, list],
@@ -273,14 +240,61 @@ def build_summary():
     sly.logger.info("Successfully built and saved summary.")
 
 
+def build_citation():
+    sly.logger.info("Starting to build citation...")
+
+    citation_content = s.CITATION_TEMPLATE.format(
+        project_name_full=s.PROJECT_NAME_FULL,
+        project_name=s.PROJECT_NAME,
+        homepage_url=s.HOMEPAGE_URL,
+    )
+
+    with open("CITATION.md", "w") as citation_file:
+        citation_file.write(citation_content)
+
+    sly.logger.info("Successfully built and saved citation.")
+    sly.logger.warning("You must update CITATION.md manually.")
+
+
+def build_license():
+    sly.logger.info("Starting to build license...")
+
+    license_content = s.LICENSE_TEMPLATE.format(
+        project_name_full=s.PROJECT_NAME_FULL,
+        license_text=s.LICENSE_TEXTS[s.LICENSE],
+        license_url=s.LICENSE_URLS[s.LICENSE],
+    )
+
+    with open("LICENSE.md", "w") as license_file:
+        license_file.write(license_content)
+
+    sly.logger.info("Successfully built and saved license.")
+
+
+def build_readme():
+    sly.logger.info("Starting to build readme...")
+
+    readme_content = s.README_TEMPLATE.format(
+        project_name_full=s.PROJECT_NAME_FULL,
+        project_name=s.PROJECT_NAME,
+        cv_tasks=s.CV_TASKS,
+    )
+
+    with open("README.md", "w") as readme_file:
+        readme_file.write(readme_content)
+
+    sly.logger.info("Successfully built and saved readme.")
+
+
 def main():
     pass
-
-    sly.logger.info("Script is starting...")
 
     build_stats()
     build_visualizations()
     build_summary()
+    build_citation()
+    build_license()
+    build_readme()
 
     sly.logger.info("Script finished successfully.")
 
