@@ -1,6 +1,7 @@
 import json
 import os
 import sys
+from typing import List, Optional
 
 import dataset_tools as dtools
 import supervisely as sly
@@ -16,28 +17,47 @@ from src.convert import convert_and_upload_supervisely_project
 # 5. Fill out CITATION.md, EXPERT.md, LICENSE.md, README.md
 # 6. Push to GitHub.
 
-# Names of the project that will appear on instance and on Ninja webpage.
-PROJECT_NAME = "basic name (short)" # str
-PROJECT_NAME_FULL = "full name (long)" # str
-DOWNLOAD_ORIGINAL_URL = "https://some.com/dataset/dowload_url"  # Union[None, str]
-CLASS2COLOR = None  # or set manually with {"class":"color"} pattern.
-# Choose color from hex, rgb, or one of following presets:
-clr_presets = {
-    "red": "#D0021B",
-    "orange": "#F5A623",
-    "yellow": "#F8E71C",
-    "brown": "#8B572A",
-    "lime": "#7ED321",
-    "green": "#417505",
-    "magenta": "#BD10E0",
-    "purple": "#9013FE",
-    "blue": "#4A90E2",
-    "aqua": "#50E3C2",
-    "palelime": "#B8E986",
-    "black": "#000000",
-    "darkgray": "#4A4A4A",
-    "gray": "#9B9B9B",
-    "white": "#FFFFFF",
+# region settings
+
+##################################
+# * Before uploading to instance #
+##################################
+PROJECT_NAME: str = "basic name (short)"
+PROJECT_NAME_FULL: str = "full name (long)"
+
+
+##################################
+# * After uploading to instance  #
+##################################
+LICENSE: str = "input license here"
+# Available licenses: ["CC0", "CC-BY"]
+
+INDUSTRIES: List[str] = ["input industries here"]
+# Available industries: ["general domain"]
+
+CV_TASKS: List[str] = ["input cv tasks here"]
+# Available cv tasks: ["semantic segmentation", "instance segmentation"]
+
+ANNOTATION_TYPES: List[str] = ["input annotation types here"]
+# Available annotation types: ["semantic segmentation", "instance segmentation"]
+
+RELEASE_YEAR: int = 2000
+HOMEPAGE_URL: str = "input http url here"
+# e.g. "https://some.com/dataset/homepage"
+
+DOWNLOAD_ORIGINAL_URL: Optional[str] = "input http url here"
+# e.g. "https://some.com/dataset/download"
+
+PREVIEW_IMAGE_ID: int = 0
+# This should be filled AFTER uploading images to instance, just ID of any image.
+
+GITHUB_URL: str = "input http url here"
+# URL to GitHub repo on dataset ninja (e.g. "https://github.com/dataset-ninja/some-dataset")
+
+# endregion
+
+LICENSE_URLS = {
+    "CCO": "https://creativecommons.org/publicdomain/zero/1.0/",
 }
 
 # Create instance of supervisely API object.
@@ -61,7 +81,7 @@ if not project_info:
     # If project doesn't found on instance, create it and use new project info.
     project_info = convert_and_upload_supervisely_project(api, workspace_id, PROJECT_NAME)
     sly.logger.info(f"Project {PROJECT_NAME} not found on instance. Created new project.")
-    sly.logger.info(f"Now you can explore created project and choose 'preview_image_id'.")
+    sly.logger.info("Now you can explore created project and choose 'preview_image_id'.")
     sys.exit(0)
 else:
     sly.logger.info(f"Found project {PROJECT_NAME} on instance, will use it.")
@@ -78,16 +98,6 @@ if from_instance:
     sly.logger.info("The app in the instance mode. Will download data from Supervisely.")
 
     project_meta = sly.ProjectMeta.from_json(api.project.get_meta(project_id))
-    if CLASS2COLOR is not None:
-        meta_json = project_meta.to_json()
-        for class_info in meta_json["classes"]:
-            class_title = class_info["title"]
-            if class_title in CLASS2COLOR:
-                new_color = CLASS2COLOR[class_title]
-                class_info["color"] = clr_presets.get(new_color, new_color)
-        api.project.update_meta(project_id, meta_json)
-        project_meta = sly.ProjectMeta.from_json(meta_json)
-        
     datasets = api.dataset.get_list(project_id)
 
     sly.logger.info(
@@ -120,25 +130,25 @@ custom_data = {
     #####################
     # ! required fields #
     #####################
-    "name": PROJECT_NAME,  # * Should be filled in the beginning of file
-    "fullname": PROJECT_NAME_FULL,  # * Should be filled in the beginning of file
-    "cv_tasks": ["semantic segmentation", "object detection", "instance segmentation"], 
-    "annotation_types": ["instance segmentation"], 
-    "industries": ["general domain"],
-    "release_year": 2018, 
-    "homepage_url": "https://www.kaggle.com/datasets/kumaresanmanickavelu/lyft-udacity-challenge", 
-    "license": "CC0: Public Domain", 
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/", 
-    "preview_image_id": 224318,  # This should be filled AFTER uploading images to instance, just ID of any image
-    "github_url": "https://github.com/dataset-ninja/synthetic-plants",  # input url to GitHub repo in dataset-ninja
-    "github": "dataset-ninja/synthetic-plants",  # input GitHub repo in dataset-ninja (short way)
+    "name": PROJECT_NAME,
+    "fullname": PROJECT_NAME_FULL,
+    "cv_tasks": CV_TASKS,
+    "annotation_types": ANNOTATION_TYPES,
+    "industries": INDUSTRIES,
+    "release_year": RELEASE_YEAR,
+    "homepage_url": HOMEPAGE_URL,
+    "license": LICENSE,
+    "license_url": LICENSE_URLS[LICENSE],
+    "preview_image_id": PREVIEW_IMAGE_ID,
+    "github_url": GITHUB_URL,
+    "github": GITHUB_URL[GITHUB_URL.index("dataset-ninja") :],
     "download_sly_url": download_sly_url,
     #####################
     # ? optional fields #
     #####################
-    # "download_original_url": DOWNLOAD_ORIGINAL_URL # Union[None, str]  # * Should be filled in the beginning of file
+    "download_original_url": DOWNLOAD_ORIGINAL_URL,
     # "paper": # Union[None, str],
-    # "citation_url": None, 
+    # "citation_url": None,
     # "organization_name": # Union[None, str, list],
     # "organization_url": # Union[None, str, list],
     # "tags": [],
