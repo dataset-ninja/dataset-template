@@ -1,5 +1,6 @@
 import json
 import os
+import sys
 
 import dataset_tools as dtools
 import supervisely as sly
@@ -16,13 +17,13 @@ from src.convert import convert_and_upload_supervisely_project
 # ? 5. Fill out CITATION.md, EXPERT.md, LICENSE.md, README.md
 # ? 6. Push to GitHub.
 
-# * Names of the project that will appear on instance and on Ninja webpage.
+# Names of the project that will appear on instance and on Ninja webpage.
 PROJECT_NAME = "basic name (short)"
 PROJECT_NAME_FULL = "full name (long)" 
 DOWNLOAD_ORIGINAL_URL = "https://some.com/dataset/dowload_url"  # Union[None, str]
 
 
-# * Create instance of supervisely API object.
+# Create instance of supervisely API object.
 load_dotenv(os.path.expanduser("~/ninja.env"))
 load_dotenv("local.env")
 api = sly.Api.from_env()
@@ -33,22 +34,24 @@ sly.logger.info(
     f"Connected to Supervisely. Server address: {server_address}, team_id: {team_id}, workspace_id: {workspace_id}."
 )
 
-# * Create directories for result stats and visualizations.
+# Create directories for result stats and visualizations.
 os.makedirs("./stats/", exist_ok=True)
 os.makedirs("./visualizations/", exist_ok=True)
 
-# * Trying to retreive project info from instance by name.
+# Trying to retreive project info from instance by name.
 project_info = api.project.get_info_by_name(workspace_id, PROJECT_NAME)
 if not project_info:
-    # * If project doesn't found on instance, create it and use new project info.
+    # If project doesn't found on instance, create it and use new project info.
     project_info = convert_and_upload_supervisely_project(api, workspace_id, PROJECT_NAME)
     sly.logger.info(f"Project {PROJECT_NAME} not found on instance. Created new project.")
+    sly.logger.info(f"Now you can explore created project and choose 'preview_image_id'.")
+    sys.exit(0)
 else:
     sly.logger.info(f"Found project {PROJECT_NAME} on instance, will use it.")
 
 project_id = project_info.id
 
-# * How the app will work: from instance or from local directory.
+# How the app will work: from instance or from local directory.
 from_instance = True  # ToDo: Automatically detect if app is running from instance or locally.
 
 # * Step 1: Read project and project meta
@@ -93,13 +96,13 @@ custom_data = {
     #####################
     "name": PROJECT_NAME,  # * Should be filled in the beginning of file
     "fullname": PROJECT_NAME_FULL,  # * Should be filled in the beginning of file
-    "cv_tasks": ["semantic segmentation", "instance segmentation"],  # FILL IT!
-    "annotation_types": ["semantic segmentation", "instance segmentation"],  # FILL IT!
-    "industries": ["general domain"],  # FILL IT!
-    "release_year": 2018,  # FILL IT!
-    "homepage_url": "https://www.kaggle.com/datasets/kumaresanmanickavelu/lyft-udacity-challenge",  # FILL IT!
-    "license": "CC0: Public Domain",  # FILL IT!
-    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/",  # FILL IT!
+    "cv_tasks": ["semantic segmentation", "instance segmentation"], 
+    "annotation_types": ["semantic segmentation", "instance segmentation"], 
+    "industries": ["general domain"],
+    "release_year": 2018, 
+    "homepage_url": "https://www.kaggle.com/datasets/kumaresanmanickavelu/lyft-udacity-challenge", 
+    "license": "CC0: Public Domain", 
+    "license_url": "https://creativecommons.org/publicdomain/zero/1.0/", 
     "preview_image_id": 224318,  # This should be filled AFTER uploading images to instance, just ID of any image
     "github_url": "https://github.com/dataset-ninja/synthetic-plants",  # input url to GitHub repo in dataset-ninja
     "github": "dataset-ninja/synthetic-plants",  # input GitHub repo in dataset-ninja (short way)
