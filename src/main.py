@@ -290,6 +290,33 @@ def build_readme():
 
     sly.logger.info("Successfully built and saved readme.")
 
+def build_download():
+    sly.logger.info("Starting to build download...")
+
+    licensecheck = True
+    if s.DOWNLOAD_ORIGINAL_URL is not None and licensecheck:
+        download_content = s.DOWNLOAD_SLY_TEMPLATE.format(
+            project_name=s.PROJECT_NAME,
+            download_sly_url=download_sly_url,
+        )
+        if isinstance(s.DOWNLOAD_ORIGINAL_URL, str):
+            download_content += (
+                f"The data in original format can be 🔗 [downloaded here]({s.DOWNLOAD_ORIGINAL_URL})"
+            )
+        if isinstance(s.DOWNLOAD_ORIGINAL_URL, dict):
+            download_content += f"The data in original format can be downloaded here:\n\n"
+            for key, val in s.DOWNLOAD_ORIGINAL_URL.items():
+                download_content += f"- 🔗[{key}]({val})\n"
+    elif s.DOWNLOAD_ORIGINAL_URL is None:
+        download_content = s.DOWNLOAD_ORIGINAL_TEMPLATE.format(
+            homepage_url=s.HOMEPAGE_URL,
+            project_name=s.PROJECT_NAME,
+        )
+
+    with open("DOWNLOAD.md", "w") as download_file:
+        download_file.write(download_content)
+
+    sly.logger.info("Successfully built and saved download.")
 
 def main():
     pass
@@ -300,6 +327,7 @@ def main():
     build_citation()
     build_license()
     build_readme()
+    build_download()
 
     sly.logger.info("Script finished successfully.")
     sly.logger.warning("If needed EXPERT.md should be created and filled manually.")

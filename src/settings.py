@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 
 ##################################
 # * Before uploading to instance #
@@ -34,7 +34,7 @@ GITHUB_URL: str = None
 ##################################
 ### * Optional after uploading ###
 ##################################
-DOWNLOAD_ORIGINAL_URL: Optional[str] = None
+DOWNLOAD_ORIGINAL_URL: Optional[Union[str, dict]] = None
 # Optional link for downloading original dataset (e.g. "https://some.com/dataset/download")
 
 CLASS2COLOR: Optional[Dict[str, List[str]]] = None
@@ -70,6 +70,19 @@ CITATION_TEMPLATE = (
 LICENSE_TEMPLATE = "{project_name_full} data uses [{license_text}]({license_url})."
 
 README_TEMPLATE = "# {project_name_full}\n\n{project_name} is a dataset for {cv_tasks} tasks."
+
+DOWNLOAD_SLY_TEMPLATE = (
+    "Dataset **{project_name}** can be downloaded in Supervisely format:\n\n [Download]({download_sly_url})\n\n"
+    "As an alternative, it can be downloaded with dataset-tools package:\n``` bash\npip install --upgrade dataset-tools\n```"
+    "\n\n... using following python code:\n``` python\nimport dataset_tools as dtools\n\ndtools.download(dataset='{project_name}', dst_dir='~/dtools/datasets/{project_name}')\n```\n"
+)
+
+DOWNLOAD_ORIGINAL_TEMPLATE = (
+    "Please visit dataset [homepage]({homepage_url}) to download the data. \n\n"
+    "Afterward, you have the option to download it in the universal supervisely format by utilizing the dataset-tools package:\n``` bash\npip install --upgrade dataset-tools\n```"
+    "\n\n... using following python code:\n``` python\nimport dataset_tools as dtools\n\n"
+    "dtools.download(dataset='{project_name}', dst_dir='~/dtools/datasets/{project_name}')\n```\n"
+)
 
 ##################################
 ###### ? Checks. Do not edit #####
