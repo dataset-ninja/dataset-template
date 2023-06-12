@@ -65,6 +65,9 @@ if __name__ == "__main__":
     project_repo = ProjectRepo(api, project_id, settings)
     project_repo.build_stats(force=force_stats)
     project_repo.build_visualizations(force=force_visuals)
+
+    # * Optional parameter preview_class should be passed if needed:
+    # * Literal["ClassesPreview", "HorizontalGrid", "SideAnnotationsGrid"]
     project_repo.build_texts(force=force_texts)
 
     sly.logger.info("Script finished.")
