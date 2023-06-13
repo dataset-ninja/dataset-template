@@ -63,8 +63,8 @@ def get_settings():
         "homepage_url": HOMEPAGE_URL,
         "preview_image_id": PREVIEW_IMAGE_ID,
         "github_url": GITHUB_URL,
+    }
     
-    name_full = settings.pop("project_name_full", None)
     if any([field is None for field in settings.values()]):
         raise ValueError("Please fill all fields in settings.py after uploading to instance.")
    
