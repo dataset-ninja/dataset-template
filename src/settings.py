@@ -47,7 +47,7 @@ TAGS: List[str] = None
 
 
 def check_names():
-    fields_before_upload = [PROJECT_NAME, PROJECT_NAME_FULL]
+    fields_before_upload = [PROJECT_NAME] # PROJECT_NAME_FULL
     if any([field is None for field in fields_before_upload]):
         raise ValueError("Please fill all fields in settings.py before uploading to instance.")
 
@@ -55,7 +55,6 @@ def check_names():
 def get_settings():
     settings = {
         "project_name": PROJECT_NAME,
-        "project_name_full": PROJECT_NAME_FULL,
         "license": LICENSE,
         "industries": INDUSTRIES,
         "cv_tasks": CV_TASKS,
@@ -64,10 +63,12 @@ def get_settings():
         "homepage_url": HOMEPAGE_URL,
         "preview_image_id": PREVIEW_IMAGE_ID,
         "github_url": GITHUB_URL,
-    }
+    
+    name_full = settings.pop("project_name_full", None)
     if any([field is None for field in settings.values()]):
         raise ValueError("Please fill all fields in settings.py after uploading to instance.")
-
+   
+    settings["project_name_full"] = PROJECT_NAME_FULL
     settings["download_original_url"] = DOWNLOAD_ORIGINAL_URL
     settings["class2color"] = CLASS2COLOR
     settings["paper"] = PAPER
