@@ -13,8 +13,8 @@ PROJECT_NAME_FULL: str = None
 ##################################
 LICENSE: License = None
 INDUSTRIES: List[Industry] = None
-CV_TASKS: List[CVTask] = None
-ANNOTATION_TYPES: List[AnnotationType] = None
+CV_TASKS: List[CVTask] = [CVTask.InstanceSegmentation(), CVTask.ObjectDetection(), CVTask.SemanticSegmentation()]
+ANNOTATION_TYPES: List[AnnotationType] = [AnnotationType.InstanceSegmentation()]
 
 RELEASE_YEAR: int = None
 HOMEPAGE_URL: str = None
