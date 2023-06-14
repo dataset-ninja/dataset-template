@@ -65,6 +65,11 @@ HEATMAP_OUTPUT_WIDTH: int = None
 ###############################################################
 
 
+
+##################################
+###### ? Do not edit bellow #####
+##################################
+
 def get_visualization_options():
     vis_settings = {
         "Poster": {
