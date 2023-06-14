@@ -26,8 +26,8 @@ def get_project_info(api: sly.Api):
     project_info = api.project.get_info_by_name(WORKSPACE_ID, s.PROJECT_NAME)
     if not project_info:
         # If project doesn't found on instance, create it and use new project info.
+        sly.logger.info(f"Project {s.PROJECT_NAME} not found on instance. Creating a new one...")
         project_info = convert_and_upload_supervisely_project(api, WORKSPACE_ID, s.PROJECT_NAME)
-        sly.logger.info(f"Project {s.PROJECT_NAME} not found on instance. Created new project.")
         sly.logger.info("Now you can explore created project and choose 'preview_image_id'.")
         sys.exit(0)
     else:
