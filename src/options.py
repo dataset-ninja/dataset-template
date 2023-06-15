@@ -1,7 +1,8 @@
 ###############################################################################
-# ? Set up values if you want to change default values of visualizations
+# ! Set up values if you want to change default values of visualizations
 ###############################################################################
 
+# * Preview class to visualize in SUMMARY.md overview section
 # * Literal["ClassesPreview", "HorizontalGrid", "SideAnnotationsGrid"]
 # * If None, then preview_class will be set automatically to "ClassesPreview"
 PREVIEW_CLASS = None
