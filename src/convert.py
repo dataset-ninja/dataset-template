@@ -7,7 +7,7 @@ from dataset_tools.convert import unpack_if_archive
 import src.settings as s
 
 def download_dataset():
-    archive_path = sly.app.get_data_dir()
+    archive_path = os.path.join(sly.app.get_data_dir(), 'archive.zip')
 
     if not os.path.exists(archive_path):
         if isinstance(s.DOWNLOAD_ORIGINAL_URL, str):
