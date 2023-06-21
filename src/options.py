@@ -3,7 +3,7 @@
 ###############################################################################
 
 # * Preview class to visualize in SUMMARY.md overview section
-# * Literal["ClassesPreview", "HorizontalGrid", "SideAnnotationsGrid"]
+# * Literal["ClassesPreview", "HorizontalGrid", "SideAnnotationsGrid", "Poster"]
 # * If None, then preview_class will be set automatically to "ClassesPreview"
 PREVIEW_CLASS = None
 
