@@ -1,33 +1,65 @@
-# Path to the original dataset
-
 import supervisely as sly
-import gdown
 import os
 from dataset_tools.convert import unpack_if_archive
 import src.settings as s
+from urllib.parse import unquote, urlparse
+from supervisely.io.fs import get_file_name
+import shutil
 
-def download_dataset():
-    archive_path = os.path.join(sly.app.get_data_dir(), 'archive.zip')
 
-    if not os.path.exists(archive_path):
-        if isinstance(s.DOWNLOAD_ORIGINAL_URL, str):
-            gdown.download(s.DOWNLOAD_ORIGINAL_URL, archive_path, quiet=False)
-        if isinstance(s.DOWNLOAD_ORIGINAL_URL, dict):
-            for name, url in s.DOWNLOAD_ORIGINAL_URL:
-                gdown.download(url, os.path.join(archive_path, name), quiet=False)
-    else:
-        sly.logger.info(f"Path '{archive_path}' already exists.")
-    return unpack_if_archive(archive_path)    
+def download_dataset(teamfiles_dir: str) -> str:
+    """Use it for large datasets to convert them on the instance"""
+    api = sly.Api.from_env()
+    team_id = sly.env.team_id()
+    storage_dir = sly.app.get_data_dir()
+
+    if isinstance(s.DOWNLOAD_ORIGINAL_URL, str):
+        parsed_url = urlparse(s.DOWNLOAD_ORIGINAL_URL)
+        file_name_with_ext = os.path.basename(parsed_url.path)
+        file_name_with_ext = unquote(file_name_with_ext)
+
+        sly.logger.info(f"Start unpacking archive '{file_name_with_ext}'...")
+        local_path = os.path.join(storage_dir, file_name_with_ext)
+        teamfiles_path = os.path.join(teamfiles_dir, file_name_with_ext)
+        api.file.download(team_id, teamfiles_path, local_path)
+
+        dataset_path = unpack_if_archive(local_path)
+
+    if isinstance(s.DOWNLOAD_ORIGINAL_URL, dict):
+        for file_name_with_ext, url in s.DOWNLOAD_ORIGINAL_URL.items():
+            local_path = os.path.join(storage_dir, file_name_with_ext)
+            teamfiles_path = os.path.join(teamfiles_dir, file_name_with_ext)
+
+            if not os.path.exists(get_file_name(local_path)):
+                api.file.download(team_id, teamfiles_path, local_path)
+
+                sly.logger.info(f"Start unpacking archive '{file_name_with_ext}'...")
+                unpack_if_archive(local_path)
+
+            else:
+                sly.logger.info(
+                    f"Archive '{file_name_with_ext}' was already unpacked to '{os.path.join(storage_dir, get_file_name(file_name_with_ext))}'. Skipping..."
+                )
+
+        dataset_path = storage_dir
+    return dataset_path
+
 
 
 def convert_and_upload_supervisely_project(
     api: sly.Api, workspace_id: int, project_name: str
 ) -> sly.ProjectInfo:
-
-    # * dataset_path = download_dataset()
-
-    # Function should read local dataset and upload it to Supervisely project, then return project info.
-
+    ### Function should read local dataset and upload it to Supervisely project, then return project info.###
     raise NotImplementedError("The converter should be implemented manually.")
 
-    # * return project
+    # dataset_path = "/local/path/to/your/dataset" # general way
+    # dataset_path = download_dataset(teamfiles_dir) # for large datasets stored on instance
+
+    # ... some code here ...
+
+    # sly.logger.info('Deleting temporary app storage files...')
+    # shutil.rmtree(storage_dir)
+
+    # return project
+
+
