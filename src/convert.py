@@ -3,9 +3,10 @@ import os
 from dataset_tools.convert import unpack_if_archive
 import src.settings as s
 from urllib.parse import unquote, urlparse
-from supervisely.io.fs import get_file_name
+from supervisely.io.fs import get_file_name, get_file_size
 import shutil
 
+from tqdm import tqdm
 
 def download_dataset(teamfiles_dir: str) -> str:
     """Use it for large datasets to convert them on the instance"""
@@ -21,8 +22,9 @@ def download_dataset(teamfiles_dir: str) -> str:
         sly.logger.info(f"Start unpacking archive '{file_name_with_ext}'...")
         local_path = os.path.join(storage_dir, file_name_with_ext)
         teamfiles_path = os.path.join(teamfiles_dir, file_name_with_ext)
-        api.file.download(team_id, teamfiles_path, local_path)
-
+        fsize = get_file_size(local_path)
+        with tqdm(desc=f"Downloading '{file_name_with_ext}' to buffer..", total=fsize) as pbar:
+            api.file.download(team_id, teamfiles_path, local_path, progress_cb=pbar)
         dataset_path = unpack_if_archive(local_path)
 
     if isinstance(s.DOWNLOAD_ORIGINAL_URL, dict):
@@ -31,11 +33,17 @@ def download_dataset(teamfiles_dir: str) -> str:
             teamfiles_path = os.path.join(teamfiles_dir, file_name_with_ext)
 
             if not os.path.exists(get_file_name(local_path)):
-                api.file.download(team_id, teamfiles_path, local_path)
+                fsize = get_file_size(local_path)
+                with tqdm(
+                    desc=f"Downloading '{file_name_with_ext}' to buffer {local_path}...",
+                    total=fsize,
+                    unit="B",
+                    unit_scale=True,
+                ) as pbar:
+                    api.file.download(team_id, teamfiles_path, local_path, progress_cb=pbar)
 
                 sly.logger.info(f"Start unpacking archive '{file_name_with_ext}'...")
                 unpack_if_archive(local_path)
-
             else:
                 sly.logger.info(
                     f"Archive '{file_name_with_ext}' was already unpacked to '{os.path.join(storage_dir, get_file_name(file_name_with_ext))}'. Skipping..."
