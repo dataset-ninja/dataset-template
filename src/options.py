@@ -1,3 +1,7 @@
+from dataset_tools.templates import AnnotationType
+
+from settings import ANNOTATION_TYPES
+
 ###############################################################################
 # ! Set up values if you want to change default values of visualizations
 ###############################################################################
@@ -8,6 +12,8 @@
 PREVIEW_CLASS = None
 
 IS_DETECTION_TASK: bool = None  # ? Set True if you want to visualize only bbox annotations
+if IS_DETECTION_TASK is None:
+    IS_DETECTION_TASK = ANNOTATION_TYPES == [AnnotationType.ObjectDetection()]
 
 ###############################################################
 ####### * Set up visualization params for Poster class ########
