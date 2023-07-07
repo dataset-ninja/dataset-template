@@ -1,6 +1,6 @@
 from dataset_tools.templates import AnnotationType
 
-from settings import ANNOTATION_TYPES
+from src.settings import ANNOTATION_TYPES
 
 ###############################################################################
 # ! Set up values if you want to change default values of visualizations
