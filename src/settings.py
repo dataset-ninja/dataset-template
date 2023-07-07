@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Union
 
-from dataset_tools.templates import AnnotationType, CVTask, Industry, License
+from dataset_tools.templates import AnnotationType, CVTask, Industry, Domain, Research, License
 
 ##################################
 # * Before uploading to instance #
@@ -12,7 +12,7 @@ PROJECT_NAME_FULL: str = None
 # * After uploading to instance ##
 ##################################
 LICENSE: License = None
-INDUSTRIES: List[Industry] = None
+APPLICATIONS: List[Union[Industry, Domain, Research]] = None
 CV_TASKS: List[CVTask] = None
 ANNOTATION_TYPES: List[AnnotationType] = None
 
@@ -56,7 +56,7 @@ def get_settings():
     settings = {
         "project_name": PROJECT_NAME,
         "license": LICENSE,
-        "industries": INDUSTRIES,
+        "domains": APPLICATIONS,
         "cv_tasks": CV_TASKS,
         "annotation_types": ANNOTATION_TYPES,
         "release_year": RELEASE_YEAR,
