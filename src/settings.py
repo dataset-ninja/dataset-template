@@ -56,7 +56,7 @@ def get_settings():
     settings = {
         "project_name": PROJECT_NAME,
         "license": LICENSE,
-        "domains": APPLICATIONS,
+        "applications": APPLICATIONS,
         "cv_tasks": CV_TASKS,
         "annotation_types": ANNOTATION_TYPES,
         "release_year": RELEASE_YEAR,
