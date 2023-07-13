@@ -39,6 +39,7 @@ PAPER: Optional[str] = None
 CITATION_URL: Optional[str] = None
 ORGANIZATION_NAME: Optional[Union[str, List[str]]] = None
 ORGANIZATION_URL: Optional[Union[str, List[str]]] = None
+SLYTAGSPLIT: Dict[str, List[str]] = None
 TAGS: List[str] = None
 
 ##################################
@@ -75,6 +76,7 @@ def get_settings():
     settings["citation_url"] = CITATION_URL
     settings["organization_name"] = ORGANIZATION_NAME
     settings["organization_url"] = ORGANIZATION_URL
+    settings["slytagsplit"] = SLYTAGSPLIT
     settings["tags"] = TAGS if TAGS is not None else []
 
     return settings
