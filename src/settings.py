@@ -63,6 +63,7 @@ def check_names():
 
 def get_settings():
     if RELEASE_DATE is not None:
+        global RELEASE_YEAR
         RELEASE_YEAR = int(RELEASE_DATE.split("-")[0])
 
     settings = {
