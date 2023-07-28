@@ -40,7 +40,7 @@ DOWNLOAD_ORIGINAL_URL: Optional[Union[str, dict]] = None
 CLASS2COLOR: Optional[Dict[str, List[str]]] = None
 # If specific colors for classes are needed, fill this dict (e.g. {"class1": [255, 0, 0], "class2": [0, 255, 0]})
 
-PAPER: Optional[Union[str, List[str]]] = None
+PAPER: Optional[str] = None
 CITATION_URL: Optional[str] = None
 AUTHORS: Optional[List[str]] = None
 
