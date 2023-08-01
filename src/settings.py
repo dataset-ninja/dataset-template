@@ -48,7 +48,8 @@ AUTHORS: Optional[List[str]] = None
 ORGANIZATION_NAME: Optional[Union[str, List[str]]] = None
 ORGANIZATION_URL: Optional[Union[str, List[str]]] = None
 
-SLYTAGSPLIT: Optional[Dict[str, List[str]]] = None
+# Set '__PRETEXT__' or '__POSTTEXT__' as a key with value:str to add custom text
+SLYTAGSPLIT: Optional[Dict[str, Union[List[str], str]]] = None
 TAGS: Optional[List[str]] = None
 
 ##################################
