@@ -9,7 +9,7 @@ from src.settings import ANNOTATION_TYPES
 SAMPLE_RATE = 1  # make less if dataset is too big
 
 # * Preview class to visualize in SUMMARY.md overview section
-# * Literal["ClassesPreview", "HorizontalGrid", "SideAnnotationsGrid", "Poster"]
+# * Literal["ClassesPreview", "HorizontalGrid", "SideAnnotationsGrid", "Poster", "HorizontalGridAnimated", "VerticalGridAnimated"]
 # * If None, then preview_class will be set automatically to "ClassesPreview"
 PREVIEW_CLASS =  "Poster"
 
