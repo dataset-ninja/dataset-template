@@ -6,7 +6,6 @@ from src.settings import ANNOTATION_TYPES
 ###############################################################################
 
 SAMPLE_RATE = 1  # make less if dataset is too big
-HIDE_DATASET = True  # set False when 100% sure about repo quality
 
 # * Preview class to visualize in SUMMARY.md overview section
 # * Literal["ClassesPreview", "HorizontalGrid", "SideAnnotationsGrid", "Poster", "HorizontalGridAnimated", "VerticalGridAnimated"]
@@ -138,10 +137,7 @@ def get_stats_options():
         "Previews": {
             "is_detection_task": PREVIEWS_IS_DETECTION_TASK,
         },
-        "Other": {
-            "sample_rate": SAMPLE_RATE,
-            "hide_dataset": HIDE_DATASET,
-        },
+        "Other": {"sample_rate": SAMPLE_RATE},
     }
 
     checked_stats_settings = {}

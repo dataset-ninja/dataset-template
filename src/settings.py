@@ -1,12 +1,21 @@
 from typing import Dict, List, Optional, Union
 
-from dataset_tools.templates import AnnotationType, CVTask, Industry, Domain, Research, License, Category
+from dataset_tools.templates import (
+    AnnotationType,
+    Category,
+    CVTask,
+    Domain,
+    Industry,
+    License,
+    Research,
+)
 
 ##################################
 # * Before uploading to instance #
 ##################################
 PROJECT_NAME: str = None
 PROJECT_NAME_FULL: str = None
+HIDE_DATASET = True  # set False when 100% sure about repo quality
 
 ##################################
 # * After uploading to instance ##
@@ -73,6 +82,8 @@ def get_settings():
 
     settings = {
         "project_name": PROJECT_NAME,
+        "project_name_full": PROJECT_NAME_FULL or PROJECT_NAME,
+        "hide_dataset": HIDE_DATASET,
         "license": LICENSE,
         "applications": APPLICATIONS,
         "category": CATEGORY,
@@ -88,7 +99,6 @@ def get_settings():
         raise ValueError("Please fill all fields in settings.py after uploading to instance.")
 
     settings["release_date"] = RELEASE_DATE
-    settings["project_name_full"] = PROJECT_NAME_FULL or PROJECT_NAME
     settings["download_original_url"] = DOWNLOAD_ORIGINAL_URL
     settings["class2color"] = CLASS2COLOR
     settings["paper"] = PAPER
@@ -98,7 +108,7 @@ def get_settings():
     settings["organization_url"] = ORGANIZATION_URL
     settings["slytagsplit"] = SLYTAGSPLIT
     settings["tags"] = TAGS
-    
+
     settings["explore_datasets"] = SECTION_EXPLORE_CUSTOM_DATASETS
 
     return settings
