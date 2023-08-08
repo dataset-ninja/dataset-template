@@ -1,5 +1,4 @@
 from dataset_tools.templates import AnnotationType
-
 from src.settings import ANNOTATION_TYPES
 
 ###############################################################################
@@ -7,11 +6,12 @@ from src.settings import ANNOTATION_TYPES
 ###############################################################################
 
 SAMPLE_RATE = 1  # make less if dataset is too big
+HIDE_DATASET = True  # set False when 100% sure about repo quality
 
 # * Preview class to visualize in SUMMARY.md overview section
 # * Literal["ClassesPreview", "HorizontalGrid", "SideAnnotationsGrid", "Poster", "HorizontalGridAnimated", "VerticalGridAnimated"]
 # * If None, then preview_class will be set automatically to "ClassesPreview"
-PREVIEW_CLASS =  "Poster"
+PREVIEW_CLASS = "Poster"
 
 IS_DETECTION_TASK: bool = None  # ? Set True if you want to visualize only bbox annotations
 if IS_DETECTION_TASK is None:
@@ -72,14 +72,16 @@ HEATMAP_ROWS: int = None
 HEATMAP_COLS: int = None
 HEATMAP_GRID_SPACING: int = None
 HEATMAP_OUTER_GRID_SPACING: int = None
-HEATMAP_OUTPUT_WIDTH: int = None # 1 class in dataset? -> 1600px for portrait images, 2200px for landscape
+HEATMAP_OUTPUT_WIDTH: int = (
+    None  # 1 class in dataset? -> 1600px for portrait images, 2200px for landscape
+)
 ###############################################################
-
 
 
 ##################################
 ###### ? Do not edit bellow #####
 ##################################
+
 
 def get_visualization_options():
     vis_settings = {
@@ -101,7 +103,7 @@ def get_visualization_options():
             "rows": SIDE_ANNOTATIONS_GRID_ROWS,
             "cols": SIDE_ANNOTATIONS_GRID_COLS,
             "is_detection_task": SIDE_ANNOTATIONS_GRID_IS_DETECTION_TASK,
-        }
+        },
     }
 
     checked_vis_settings = {}
@@ -136,8 +138,10 @@ def get_stats_options():
         "Previews": {
             "is_detection_task": PREVIEWS_IS_DETECTION_TASK,
         },
-        "Other": {"sample_rate": SAMPLE_RATE},
-
+        "Other": {
+            "sample_rate": SAMPLE_RATE,
+            "hide_dataset": HIDE_DATASET,
+        },
     }
 
     checked_stats_settings = {}
