@@ -51,6 +51,7 @@ CLASS2COLOR: Optional[Dict[str, List[str]]] = None
 
 # If you have more than the one paper, put the most relatable link as the first element of the list
 PAPER: Optional[Union[str, List[str]]] = None
+BLOGPOST: Optional[Union[str, List[str]]] = None
 CITATION_URL: Optional[str] = None
 AUTHORS: Optional[List[str]] = None
 
@@ -102,6 +103,7 @@ def get_settings():
     settings["download_original_url"] = DOWNLOAD_ORIGINAL_URL
     settings["class2color"] = CLASS2COLOR
     settings["paper"] = PAPER
+    settings["blog"] = BLOGPOST
     settings["citation_url"] = CITATION_URL
     settings["authors"] = AUTHORS
     settings["organization_name"] = ORGANIZATION_NAME
