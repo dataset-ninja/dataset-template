@@ -52,7 +52,15 @@ def download_dataset(teamfiles_dir: str) -> str:
 
         dataset_path = storage_dir
     return dataset_path
-
+    
+def count_files(path, extension):
+    count = 0
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if file.endswith(extension):
+                count += 1
+    return count
+    
 def convert_and_upload_supervisely_project(
     api: sly.Api, workspace_id: int, project_name: str
 ) -> sly.ProjectInfo:
