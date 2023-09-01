@@ -50,8 +50,11 @@ CLASS2COLOR: Optional[Dict[str, List[str]]] = None
 # If specific colors for classes are needed, fill this dict (e.g. {"class1": [255, 0, 0], "class2": [0, 255, 0]})
 
 # If you have more than the one paper, put the most relatable link as the first element of the list
-PAPER: Optional[Union[str, List[str]]] = None
-BLOGPOST: Optional[Union[str, List[str]]] = None
+# Use dict key to specify name for a button
+PAPER: Optional[Union[str, List[str], Dict[str]]] = None
+BLOGPOST: Optional[Union[str, List[str]], Dict[str]] = None
+REPOSITORY: Optional[Union[str, List[str]], Dict[str]] = None
+
 CITATION_URL: Optional[str] = None
 AUTHORS: Optional[List[str]] = None
 
@@ -104,6 +107,7 @@ def get_settings():
     settings["class2color"] = CLASS2COLOR
     settings["paper"] = PAPER
     settings["blog"] = BLOGPOST
+    settings["repository"] = REPOSITORY
     settings["citation_url"] = CITATION_URL
     settings["authors"] = AUTHORS
     settings["organization_name"] = ORGANIZATION_NAME
