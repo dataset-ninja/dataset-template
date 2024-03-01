@@ -2,7 +2,6 @@ import os
 import shutil
 
 import supervisely as sly
-from supervisely.imaging.color import get_predefined_colors
 from supervisely.io.fs import (
     file_exists,
     get_file_name,
@@ -63,10 +62,7 @@ def convert_and_upload_supervisely_project(
 
     class_names = ["class1", "class2", ...]
     idx2clsname = {}
-    obj_classes = [
-        sly.ObjClass(name, sly.Rectangle, color)
-        for name, color in zip(class_names, get_predefined_colors(len(class_names)))
-    ]
+    obj_classes = [sly.ObjClass(name, sly.Rectangle) for name in class_names]
 
     project = api.project.create(workspace_id, project_name, change_name_if_conflict=True)
     meta = sly.ProjectMeta(obj_classes=obj_classes)
