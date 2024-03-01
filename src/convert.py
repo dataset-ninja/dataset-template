@@ -1,85 +1,94 @@
-import supervisely as sly
 import os
-from dataset_tools.convert import unpack_if_archive
-import src.settings as s
-from urllib.parse import unquote, urlparse
-from supervisely.io.fs import get_file_name, get_file_size
 import shutil
 
+import supervisely as sly
+from supervisely.imaging.color import get_predefined_colors
+from supervisely.io.fs import (
+    file_exists,
+    get_file_name,
+    get_file_name_with_ext,
+    get_file_size,
+)
 from tqdm import tqdm
 
-def download_dataset(teamfiles_dir: str) -> str:
-    """Use it for large datasets to convert them on the instance"""
-    api = sly.Api.from_env()
-    team_id = sly.env.team_id()
-    storage_dir = sly.app.get_data_dir()
+import src.settings as s
+from dataset_tools.convert import unpack_if_archive
 
-    if isinstance(s.DOWNLOAD_ORIGINAL_URL, str):
-        parsed_url = urlparse(s.DOWNLOAD_ORIGINAL_URL)
-        file_name_with_ext = os.path.basename(parsed_url.path)
-        file_name_with_ext = unquote(file_name_with_ext)
 
-        sly.logger.info(f"Start unpacking archive '{file_name_with_ext}'...")
-        local_path = os.path.join(storage_dir, file_name_with_ext)
-        teamfiles_path = os.path.join(teamfiles_dir, file_name_with_ext)
-
-        fsize = api.file.get_directory_size(team_id, teamfiles_dir)
-        with tqdm(
-            desc=f"Downloading '{file_name_with_ext}' to buffer...",
-            total=fsize,
-            unit="B",
-            unit_scale=True,
-        ) as pbar:        
-            api.file.download(team_id, teamfiles_path, local_path, progress_cb=pbar)
-        dataset_path = unpack_if_archive(local_path)
-
-    if isinstance(s.DOWNLOAD_ORIGINAL_URL, dict):
-        for file_name_with_ext, url in s.DOWNLOAD_ORIGINAL_URL.items():
-            local_path = os.path.join(storage_dir, file_name_with_ext)
-            teamfiles_path = os.path.join(teamfiles_dir, file_name_with_ext)
-
-            if not os.path.exists(get_file_name(local_path)):
-                fsize = api.file.get_directory_size(team_id, teamfiles_dir)
-                with tqdm(
-                    desc=f"Downloading '{file_name_with_ext}' to buffer...",
-                    total=fsize,
-                    unit="B",
-                    unit_scale=True,
-                ) as pbar:
-                    api.file.download(team_id, teamfiles_path, local_path, progress_cb=pbar)
-
-                sly.logger.info(f"Start unpacking archive '{file_name_with_ext}'...")
-                unpack_if_archive(local_path)
-            else:
-                sly.logger.info(
-                    f"Archive '{file_name_with_ext}' was already unpacked to '{os.path.join(storage_dir, get_file_name(file_name_with_ext))}'. Skipping..."
-                )
-
-        dataset_path = storage_dir
-    return dataset_path
-    
-def count_files(path, extension):
-    count = 0
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            if file.endswith(extension):
-                count += 1
-    return count
-    
 def convert_and_upload_supervisely_project(
     api: sly.Api, workspace_id: int, project_name: str
 ) -> sly.ProjectInfo:
-    ### Function should read local dataset and upload it to Supervisely project, then return project info.###
-    raise NotImplementedError("The converter should be implemented manually.")
+    # Possible structure for bbox case. Feel free to modify as you needs.
 
-    # dataset_path = "/local/path/to/your/dataset" # general way
-    # dataset_path = download_dataset(teamfiles_dir) # for large datasets stored on instance
+    root_path = ""
+    images_folder = "images"
+    bboxes_folder = "labels"
+    batch_size = 30
+    img_ext = ".png"
+    ann_ext = ".txt"
 
-    # ... some code here ...
+    def create_ann(image_path):
+        labels, img_tags, label_tags = [], [], []
 
-    # sly.logger.info('Deleting temporary app storage files...')
-    # shutil.rmtree(storage_dir)
+        image_np = sly.imaging.image.read(image_path)[:, :, 0]
+        img_height = image_np.shape[0]
+        img_width = image_np.shape[1]
 
-    # return project
+        file_name = get_file_name(image_path)
+        curr_anns_dirpath = ""
+        ann_path = os.path.join(curr_anns_dirpath, file_name + ann_ext)
 
+        if file_exists(ann_path):
+            with open(ann_path) as f:
+                content = f.read().split("\n")
+                for curr_data in content:
+                    if len(curr_data) != 0:
+                        curr_data = list(map(float, curr_data.split(" ")))
 
+                        left = int((curr_data[1] - curr_data[3] / 2) * img_width)
+                        right = int((curr_data[1] + curr_data[3] / 2) * img_width)
+                        top = int((curr_data[2] - curr_data[4] / 2) * img_height)
+                        bottom = int((curr_data[2] + curr_data[4] / 2) * img_height)
+
+                        rectangle = sly.Rectangle(top=top, left=left, bottom=bottom, right=right)
+
+                        for obj_class in obj_classes:
+                            if obj_class.name == idx2clsname[curr_data[0]]:
+                                curr_obj_class = obj_class
+                                break
+                        label = sly.Label(rectangle, curr_obj_class, label_tags)
+                        labels.append(label)
+
+        return sly.Annotation(img_size=(img_height, img_width), labels=labels, img_tags=img_tags)
+
+    obj_class_names = ["class1", "class2", ...]
+    idx2clsname = {}
+    colors = get_predefined_colors(len(obj_class_names))
+    obj_classes = [
+        sly.ObjClass(name, sly.Rectangle, colors[i]) for i, name in enumerate(obj_class_names)
+    ]
+
+    project = api.project.create(workspace_id, project_name, change_name_if_conflict=True)
+    meta = sly.ProjectMeta(obj_classes=obj_classes)
+    api.project.update_meta(project.id, meta.to_json())
+
+    for ds_name in os.listdir(root_path):
+        dataset = api.dataset.create(project.id, ds_name, change_name_if_conflict=True)
+        dataset_path = os.path.join(root_path, ds_name)
+
+        images_pathes = sly.fs.list_files_recursively(dataset_path, valid_extensions=[img_ext])
+
+        pbar = tqdm(desc=f"Create dataset '{ds_name}'", total=len(images_pathes))
+        for images_pathes_batch in sly.batched(images_pathes, batch_size=batch_size):
+            images_names_batch = [
+                get_file_name_with_ext(image_path) for image_path in images_pathes_batch
+            ]
+
+            img_infos = api.image.upload_paths(dataset.id, images_names_batch, images_pathes_batch)
+            img_ids = [image.id for image in img_infos]
+
+            anns = [create_ann(image_path) for image_path in images_pathes_batch]
+            api.annotation.upload_anns(img_ids, anns)
+
+            pbar.update(len(images_names_batch))
+    return project
