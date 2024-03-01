@@ -61,11 +61,11 @@ def convert_and_upload_supervisely_project(
 
         return sly.Annotation(img_size=(img_height, img_width), labels=labels, img_tags=img_tags)
 
-    obj_class_names = ["class1", "class2", ...]
+    class_names = ["class1", "class2", ...]
     idx2clsname = {}
-    colors = get_predefined_colors(len(obj_class_names))
     obj_classes = [
-        sly.ObjClass(name, sly.Rectangle, colors[i]) for i, name in enumerate(obj_class_names)
+        sly.ObjClass(name, sly.Rectangle, color)
+        for name, color in zip(class_names, get_predefined_colors(len(class_names)))
     ]
 
     project = api.project.create(workspace_id, project_name, change_name_if_conflict=True)
